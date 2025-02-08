@@ -11,7 +11,7 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
-  vi.useFakeTimers();
+  vi.useFakeTimers({ shouldAdvanceTime: true });
   // @ts-ignore
   globalThis.jest = vi;
   expect.hasAssertions();

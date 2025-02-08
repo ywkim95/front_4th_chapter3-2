@@ -1,5 +1,5 @@
 import { ChakraProvider } from '@chakra-ui/react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import EventCard from '../../components/EventCard';
@@ -30,7 +30,7 @@ describe('EventCard', () => {
           editEvent={mockEditEvent}
           deleteEvent={mockDeleteEvent}
         />
-      </ChakraProvider>,
+      </ChakraProvider>
     );
 
   it('이벤트 정보를 올바르게 표시한다.', () => {
@@ -55,11 +55,9 @@ describe('EventCard', () => {
           editEvent={mockEditEvent}
           deleteEvent={mockDeleteEvent}
         />
-      </ChakraProvider>,
+      </ChakraProvider>
     );
-    await waitFor(() => {
-      expect(screen.getByTestId('BellIcon')).toBeInTheDocument();
-    });
+    expect(await screen.findByTestId('BellIcon')).toBeInTheDocument();
   });
 
   it('수정 버튼 클릭 시, editEvent 콜백을 호출한다.', async () => {
