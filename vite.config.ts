@@ -19,10 +19,13 @@ export default mergeConfig(
       globals: true,
       environment: 'jsdom',
       setupFiles: './src/setupTests.ts',
+      fakeTimers: {
+        toFake: ['Date', 'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
+      },
       coverage: {
         reportsDirectory: './.coverage',
         reporter: ['lcov', 'json', 'json-summary'],
       },
     },
-  })
+  }),
 );

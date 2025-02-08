@@ -1,6 +1,7 @@
 import { useToast } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 
+import { DEFAULT_TOAST_DURATION, TOAST_STATUS, TOAST_MESSAGES } from '../toastConfig.ts';
 import { Event, EventForm } from '../types';
 
 export const useEventOperations = (editing: boolean, onSave?: () => void) => {
@@ -18,9 +19,9 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
     } catch (error) {
       console.error('Error fetching events:', error);
       toast({
-        title: '이벤트 로딩 실패',
-        status: 'error',
-        duration: 3000,
+        title: TOAST_MESSAGES.LOAD_ERROR,
+        status: TOAST_STATUS.ERROR,
+        duration: DEFAULT_TOAST_DURATION,
         isClosable: true,
       });
     }
@@ -50,17 +51,17 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
       await fetchEvents();
       onSave?.();
       toast({
-        title: editing ? '일정이 수정되었습니다.' : '일정이 추가되었습니다.',
-        status: 'success',
-        duration: 3000,
+        title: editing ? TOAST_MESSAGES.MODIFY_SUCCESS : TOAST_MESSAGES.SAVE_SUCCESS,
+        status: TOAST_STATUS.SUCCESS,
+        duration: DEFAULT_TOAST_DURATION,
         isClosable: true,
       });
     } catch (error) {
       console.error('Error saving event:', error);
       toast({
-        title: '일정 저장 실패',
-        status: 'error',
-        duration: 3000,
+        title: TOAST_MESSAGES.SAVE_ERROR,
+        status: TOAST_STATUS.ERROR,
+        duration: DEFAULT_TOAST_DURATION,
         isClosable: true,
       });
     }
@@ -76,28 +77,29 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
 
       await fetchEvents();
       toast({
-        title: '일정이 삭제되었습니다.',
-        status: 'info',
-        duration: 3000,
+        title: TOAST_MESSAGES.DELETE_SUCCESS,
+        status: TOAST_STATUS.INFO,
+        duration: DEFAULT_TOAST_DURATION,
         isClosable: true,
       });
     } catch (error) {
       console.error('Error deleting event:', error);
       toast({
-        title: '일정 삭제 실패',
-        status: 'error',
-        duration: 3000,
+        title: TOAST_MESSAGES.DELETE_ERROR,
+        status: TOAST_STATUS.ERROR,
+        duration: DEFAULT_TOAST_DURATION,
         isClosable: true,
       });
     }
   };
 
   async function init() {
+    const DURATION_NOT_CLOSABLE = 1000;
     await fetchEvents();
     toast({
-      title: '일정 로딩 완료!',
-      status: 'info',
-      duration: 1000,
+      title: TOAST_MESSAGES.LOAD_SUCCESS,
+      status: TOAST_STATUS.INFO,
+      duration: DURATION_NOT_CLOSABLE,
     });
   }
 

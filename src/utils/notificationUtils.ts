@@ -1,3 +1,4 @@
+import { notificationOptions } from '../config.ts';
 import { Event } from '../types';
 
 const 초 = 1000;
@@ -13,4 +14,14 @@ export function getUpcomingEvents(events: Event[], now: Date, notifiedEvents: st
 
 export function createNotificationMessage({ notificationTime, title }: Event) {
   return `${notificationTime}분 후 ${title} 일정이 시작됩니다.`;
+}
+
+export function getNotificationLabel(notificationTime: number) {
+  const notification = notificationOptions.find((option) => option.value === notificationTime);
+
+  if (!notification) {
+    return null;
+  }
+
+  return notification.label;
 }

@@ -1,5 +1,6 @@
-import { Event } from '../types';
+import { Event, EventForm } from '../types';
 import { getWeekDates, isDateInRange } from './dateUtils';
+import { useEventForm } from '../hooks/useEventForm.ts';
 
 function filterEventsByDateRange(events: Event[], start: Date, end: Date): Event[] {
   return events.filter((event) => {
@@ -15,7 +16,7 @@ function containsTerm(target: string, term: string) {
 function searchEvents(events: Event[], term: string) {
   return events.filter(
     ({ title, description, location }) =>
-      containsTerm(title, term) || containsTerm(description, term) || containsTerm(location, term)
+      containsTerm(title, term) || containsTerm(description, term) || containsTerm(location, term),
   );
 }
 
@@ -26,7 +27,7 @@ function filterEventsByDateRangeAtWeek(events: Event[], currentDate: Date) {
 
 function filterEventsByDateRangeAtMonth(events: Event[], currentDate: Date) {
   const monthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-  const monthEnd = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+  const monthEnd = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 23, 59, 59);
   return filterEventsByDateRange(events, monthStart, monthEnd);
 }
 
@@ -34,7 +35,7 @@ export function getFilteredEvents(
   events: Event[],
   searchTerm: string,
   currentDate: Date,
-  view: 'week' | 'month'
+  view: 'week' | 'month',
 ): Event[] {
   const searchedEvents = searchEvents(events, searchTerm);
 
@@ -47,4 +48,23 @@ export function getFilteredEvents(
   }
 
   return searchedEvents;
+}
+
+export function getEventData(eventForm: ReturnType<typeof useEventForm>): Event | EventForm {
+  return {
+    id: eventForm.editingEvent ? eventForm.editingEvent.id : undefined,
+    title: eventForm.title,
+    date: eventForm.date,
+    startTime: eventForm.startTime,
+    endTime: eventForm.endTime,
+    description: eventForm.description,
+    location: eventForm.location,
+    category: eventForm.category,
+    repeat: {
+      type: eventForm.isRepeating ? eventForm.repeatType : 'none',
+      interval: eventForm.repeatInterval,
+      endDate: eventForm.repeatEndDate || undefined,
+    },
+    notificationTime: eventForm.notificationTime,
+  };
 }

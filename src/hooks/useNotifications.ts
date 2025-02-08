@@ -11,16 +11,14 @@ export const useNotifications = (events: Event[]) => {
   const checkUpcomingEvents = () => {
     const now = new Date();
     const upcomingEvents = getUpcomingEvents(events, now, notifiedEvents);
+    const upcomingEventsMessages = upcomingEvents.map((event) => ({
+      id: event.id,
+      message: createNotificationMessage(event),
+    }));
+    const upcomingEventIds = upcomingEvents.map(({ id }) => id);
 
-    setNotifications((prev) => [
-      ...prev,
-      ...upcomingEvents.map((event) => ({
-        id: event.id,
-        message: createNotificationMessage(event),
-      })),
-    ]);
-
-    setNotifiedEvents((prev) => [...prev, ...upcomingEvents.map(({ id }) => id)]);
+    setNotifications((prev) => [...prev, ...upcomingEventsMessages]);
+    setNotifiedEvents((prev) => [...prev, ...upcomingEventIds]);
   };
 
   const removeNotification = (index: number) => {
