@@ -7,7 +7,7 @@ import { Event } from '../../types';
 describe('CalendarView', () => {
   const mockSetView = vi.fn();
   const mockNavigate = vi.fn();
-  const currentDate = new Date();
+  const currentDate = new Date('2025-02-06');
   const filteredEvents: Event[] = [];
   const notifiedEvents: string[] = [];
   const holidays: Record<string, string> = {};
@@ -24,7 +24,7 @@ describe('CalendarView', () => {
           notifiedEvents={notifiedEvents}
           holidays={holidays}
         />
-      </ChakraProvider>,
+      </ChakraProvider>
     );
 
   it('주간 뷰일 때 WeekEventView를 렌더링한다.', () => {
