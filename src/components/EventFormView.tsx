@@ -10,9 +10,10 @@ import {
 } from '@chakra-ui/react';
 
 import FormField from './FormField.tsx';
-import { categories, notificationOptions } from '../config.ts';
+import { categories, notificationOptions, repeatTypes } from '../config.ts';
 import { useEventForm } from '../hooks/useEventForm.ts';
 import { RepeatType } from '../types.ts';
+import { getRepeatText } from '../utils/dateUtils.ts';
 import { getTimeErrorMessage } from '../utils/timeValidation.ts';
 
 interface EventFormProps {
@@ -114,7 +115,8 @@ const EventFormView = ({ formState, onSubmit }: EventFormProps) => {
       <FormField label='알림 설정'>
         <Select
           value={notificationTime}
-          onChange={(e) => setNotificationTime(Number(e.target.value))}>
+          onChange={(e) => setNotificationTime(Number(e.target.value))}
+        >
           {notificationOptions.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
@@ -128,11 +130,13 @@ const EventFormView = ({ formState, onSubmit }: EventFormProps) => {
           <FormField label='반복 유형'>
             <Select
               value={repeatType}
-              onChange={(e) => setRepeatType(e.target.value as RepeatType)}>
-              <option value='daily'>매일</option>
-              <option value='weekly'>매주</option>
-              <option value='monthly'>매월</option>
-              <option value='yearly'>매년</option>
+              onChange={(e) => setRepeatType(e.target.value as RepeatType)}
+            >
+              {repeatTypes.map((type) => (
+                <option key={type} value={type}>
+                  {getRepeatText(type)}
+                </option>
+              ))}
             </Select>
           </FormField>
           <HStack width='100%'>

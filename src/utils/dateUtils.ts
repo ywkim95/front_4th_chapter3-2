@@ -123,10 +123,23 @@ export function getDateUnit(dateType: RepeatType) {
     case 'weekly':
       return '주';
     case 'monthly':
-      return '월';
+      return '개월';
     case 'yearly':
       return '년';
     default:
       return null;
+  }
+}
+
+export function getRepeatText(repeat: Omit<RepeatType, 'none'>) {
+  switch (repeat) {
+    case 'daily':
+      return '매일';
+    case 'weekly':
+      return '매주';
+    case 'monthly':
+      return '매월';
+    case 'yearly':
+      return '매년';
   }
 }
