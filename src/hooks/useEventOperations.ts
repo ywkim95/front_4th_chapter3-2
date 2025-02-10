@@ -94,12 +94,12 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
   };
 
   async function init() {
-    const DURATION_NOT_CLOSABLE = 1000;
+    const NO_CLOSABLE_DURATION = 1000;
     await fetchEvents();
     toast({
       title: TOAST_MESSAGES.LOAD_SUCCESS,
       status: TOAST_STATUS.INFO,
-      duration: DURATION_NOT_CLOSABLE,
+      duration: NO_CLOSABLE_DURATION,
     });
   }
 
