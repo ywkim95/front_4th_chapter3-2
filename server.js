@@ -71,6 +71,7 @@ app.delete('/api/events/:id', async (req, res) => {
   res.status(204).send();
 });
 
+// 반복일정 생성
 app.post('/api/events-list', async (req, res) => {
   const events = await getEvents();
   const repeatId = randomUUID();
@@ -96,6 +97,7 @@ app.post('/api/events-list', async (req, res) => {
   res.status(201).json(newEvents);
 });
 
+// 반복일정 수정
 app.put('/api/events-list', async (req, res) => {
   const events = await getEvents();
   let isUpdated = false;
@@ -123,6 +125,7 @@ app.put('/api/events-list', async (req, res) => {
   }
 });
 
+// 반복일정 삭제
 app.delete('/api/events-list', async (req, res) => {
   const events = await getEvents();
   const newEvents = events.events.filter((event) => !req.body.eventIds.includes(event.id)); // ? ids를 전달하면 해당 아이디를 기준으로 events에서 제거
