@@ -1,5 +1,5 @@
 import { ChakraProvider } from '@chakra-ui/react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import EventCard from '../../components/EventCard';
@@ -72,5 +72,16 @@ describe('EventCard', () => {
     const user = userEvent.setup({ delay: null });
     await user.click(screen.getByRole('button', { name: /delete event/i }));
     expect(mockDeleteEvent).toHaveBeenCalledWith(mockEvent.id);
+  });
+
+  it('반복 간격이 있는 이벤트는 반복 간격을 표시한다.', () => {
+    const mockEventWithRepeat: Event = {
+      ...mockEvent,
+      repeat: { type: 'daily', interval: 1 },
+    };
+    renderComponent(mockEventWithRepeat);
+    const eventCard = within(screen.getByTestId('event card'));
+
+    expect(eventCard.getByText(/1일마다/)).toBeInTheDocument();
   });
 });

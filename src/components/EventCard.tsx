@@ -13,14 +13,15 @@ interface EventCardProps {
 }
 
 const EventCard = ({ event, isNotified, editEvent, deleteEvent }: EventCardProps) => (
-  <Box key={event.id} borderWidth={1} borderRadius='lg' p={3} width='100%'>
-    <HStack justifyContent='space-between'>
-      <VStack align='start'>
+  <Box data-testid="event card" key={event.id} borderWidth={1} borderRadius="lg" p={3} width="100%">
+    <HStack justifyContent="space-between">
+      <VStack align="start">
         <HStack>
-          {isNotified && <BellIcon data-testid='BellIcon' color='red.500' />}
+          {isNotified && <BellIcon data-testid="BellIcon" color="red.500" />}
           <Text
             fontWeight={isNotified ? 'bold' : 'normal'}
-            color={isNotified ? 'red.500' : 'inherit'}>
+            color={isNotified ? 'red.500' : 'inherit'}
+          >
             {event.title}
           </Text>
         </HStack>
@@ -34,17 +35,16 @@ const EventCard = ({ event, isNotified, editEvent, deleteEvent }: EventCardProps
         {event.repeat.type !== 'none' && (
           <Text>
             반복: {event.repeat.interval}
-            {getDateUnit(event.repeat.type)}
-            마다
+            {getDateUnit(event.repeat.type)}마다
             {event.repeat.endDate && ` (종료: ${event.repeat.endDate})`}
           </Text>
         )}
         <Text>알림: {getNotificationLabel(event.notificationTime)}</Text>
       </VStack>
       <HStack>
-        <IconButton aria-label='Edit event' icon={<EditIcon />} onClick={() => editEvent(event)} />
+        <IconButton aria-label="Edit event" icon={<EditIcon />} onClick={() => editEvent(event)} />
         <IconButton
-          aria-label='Delete event'
+          aria-label="Delete event"
           icon={<DeleteIcon />}
           onClick={() => deleteEvent(event.id)}
         />
