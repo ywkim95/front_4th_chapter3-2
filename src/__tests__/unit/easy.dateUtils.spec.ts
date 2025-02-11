@@ -1,11 +1,15 @@
+import { describe } from 'vitest';
+
 import { Event } from '../../types';
 import {
   fillZero,
   formatDate,
   formatMonth,
   formatWeek,
+  getDateUnit,
   getDaysInMonth,
   getEventsForDay,
+  getRepeatText,
   getWeekDates,
   getWeeksAtMonth,
   isDateInRange,
@@ -358,5 +362,23 @@ describe('formatDate', () => {
     const currentDate = new Date('2024-02-05');
     const formattedDate = formatDate(currentDate);
     expect(formattedDate).toBe('2024-02-05');
+  });
+});
+
+describe('getDateUnit', () => {
+  it('매일 반복에 대한 단위를 반환한다', () => {
+    const result = getDateUnit('daily');
+    expect(result).toBe('일');
+  });
+});
+
+describe('getRepeatText', () => {
+  it('매일 반복에 대한 텍스트를 반환한다', () => {
+    const result = getRepeatText('daily');
+    expect(result).toBe('매일');
+  });
+  it('매주 반복에 대한 텍스트를 반환한다', () => {
+    const result = getRepeatText('weekly');
+    expect(result).toBe('매주');
   });
 });
