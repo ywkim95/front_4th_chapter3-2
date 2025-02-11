@@ -188,3 +188,37 @@ it("네트워크 오류 시 '일정 삭제 실패'라는 텍스트가 노출되�
     isClosable: true,
   });
 });
+
+it('새로운 이벤트를 생성할 때, 반복 설정이 있으면 반복 설정에 의하여 이벤트 리스트가 생성된다.', async () => {
+  server.use();
+
+  const { result } = renderHook(() => useEventOperations(false));
+
+  await act(async () => {
+    await result.current.saveEventList();
+  });
+
+  expect(result.current.events).toHaveLength(3);
+});
+it('기존 이벤트를 수정할 때, 반복 설정이 있으면 적절하게 반복 설정이 적용된다', async () => {
+  server.use();
+
+  const { result } = renderHook(() => useEventOperations(true));
+
+  await act(async () => {
+    await result.current.saveEventList();
+  });
+
+  expect(result.current.events).toHaveLength(3);
+});
+it('반복 설정이 적용된 이벤트를 삭제할 때, 적절하게 반복 설정이 적용된다', async () => {
+  server.use();
+
+  const { result } = renderHook(() => useEventOperations(false));
+
+  await act(async () => {
+    await result.current.deleteEvent('1');
+  });
+
+  expect(result.current.events).toHaveLength(2);
+});

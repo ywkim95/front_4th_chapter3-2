@@ -103,10 +103,13 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
     });
   }
 
+  const saveEventList = () => {};
+  const deleteEventList = () => {};
+
   useEffect(() => {
     init();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { events, fetchEvents, saveEvent, deleteEvent };
+  return { events, fetchEvents, saveEvent, deleteEvent, saveEventList, deleteEventList };
 };
