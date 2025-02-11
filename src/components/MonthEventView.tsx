@@ -21,13 +21,13 @@ const MonthEventView = ({
   const weeks = getWeeksAtMonth(currentDate);
 
   return (
-    <VStack data-testid='month-view' align='stretch' w='full' spacing={4}>
-      <Heading size='md'>{formatMonth(currentDate)}</Heading>
-      <Table variant='simple' w='full'>
+    <VStack data-testid="month-view" align="stretch" w="full" spacing={4}>
+      <Heading size="md">{formatMonth(currentDate)}</Heading>
+      <Table variant="simple" w="full">
         <Thead>
           <Tr>
             {weekDays.map((day) => (
-              <Th key={day} width='14.28%'>
+              <Th key={day} width="14.28%">
                 {day}
               </Th>
             ))}
@@ -44,22 +44,27 @@ const MonthEventView = ({
                 return (
                   <Td
                     key={dayIndex}
-                    height='100px'
-                    verticalAlign='top'
-                    width='14.28%'
-                    position='relative'>
+                    height="100px"
+                    verticalAlign="top"
+                    width="14.28%"
+                    position="relative"
+                  >
                     {day && (
                       <>
-                        <Text fontWeight='bold'>{day}</Text>
+                        <Text fontWeight="bold">{day}</Text>
                         {holiday && (
-                          <Text color='red.500' fontSize='sm'>
+                          <Text color="red.500" fontSize="sm">
                             {holiday}
                           </Text>
                         )}
                         {getEventsForDay(filteredEvents, day).map((event) => {
                           const isNotified = notifiedEvents.includes(event.id);
                           return (
-                            <CalendarEvent key={event.id} event={event} isNotified={isNotified} />
+                            <CalendarEvent
+                              key={event.id + event.repeat.id}
+                              event={event}
+                              isNotified={isNotified}
+                            />
                           );
                         })}
                       </>
