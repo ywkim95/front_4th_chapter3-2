@@ -4,6 +4,7 @@ import { http, HttpResponse } from 'msw';
 import {
   setupMockHandlerCreation,
   setupMockHandlerDeletion,
+  setupMockHandlerListCreation,
   setupMockHandlerUpdating,
 } from '../../__mocks__/handlersUtils.ts';
 import { events } from '../../__mocks__/response/events.json' assert { type: 'json' };
@@ -189,11 +190,14 @@ it("네트워크 오류 시 '일정 삭제 실패'라는 텍스트가 노출되�
   });
 });
 
-it('새로운 이벤트를 생성할 때, 반복 설정이 있으면 반복 설정에 의하여 이벤트 리스트가 생성된다.', async () => {
-  vi.setSystemTime('2024-07-01');
+describe('이벤트 반복 설정', () => {
+  beforeEach(() => {
+    vi.setSystemTime('2024-07-01');
+  });
+
   const mockEventForm: Omit<EventForm, 'repeat'> = {
     title: '새로운 회의',
-    date: '2024-10-16',
+    date: '2024-07-16',
     startTime: '09:00',
     endTime: '10:00',
     description: '새로운 팀 미팅',
@@ -202,28 +206,43 @@ it('새로운 이벤트를 생성할 때, 반복 설정이 있으면 반복 설�
     notificationTime: 10,
   };
 
-  const eventForm: EventForm = {
-    ...mockEventForm,
-    repeat: { type: 'daily', interval: 10, endDate: '2024-07-31' },
-  };
+  it('새로운 이벤트를 생성할 때, 반복 설정이 있으면 반복 설정에 의하여 이벤트 리스트가 생성된다.', async () => {
+    const eventForm: EventForm = {
+      ...mockEventForm,
+      repeat: { type: 'daily', interval: 10, endDate: '2024-07-31' },
+    };
 
-  server.use(
-    http.get('api/events', () => HttpResponse.json(events, { status: 200 })),
-    http.post('api/events-list', async ({ request, params }) => {
-      const data = (await request.json()) as EventForm[];
-      console.log(data);
-      return HttpResponse.json(events, { status: 200 });
-    })
-  );
+    setupMockHandlerListCreation();
 
-  const { result } = renderHook(() => useEventOperations(false));
-  act(() => {
-    result.current.saveEvent(eventForm);
+    const { result } = renderHook(() => useEventOperations(false));
+    await act(async () => {
+      await result.current.saveEvent(eventForm);
+    });
+
+    const newEvents: Event[] = [
+      {
+        id: '1',
+        ...eventForm,
+        date: '2024-07-16',
+        repeat: {
+          ...eventForm.repeat,
+          id: '1',
+        },
+      },
+      {
+        id: '2',
+        ...eventForm,
+        date: '2024-07-26',
+        repeat: {
+          ...eventForm.repeat,
+          id: '1',
+        },
+      },
+    ];
+
+    await act(() => Promise.resolve(null));
+    expect(result.current.events).toEqual(newEvents);
   });
-
-  // const newEvents =
-  //
-  // expect()
+  it('기존 이벤트를 수정할 때, 반복 설정이 있으면 적절하게 반복 설정이 적용된다', async () => {});
+  it('반복 설정이 적용된 이벤트를 삭제할 때, 적절하게 반복 설정이 적용된다', async () => {});
 });
-it('기존 이벤트를 수정할 때, 반복 설정이 있으면 적절하게 반복 설정이 적용된다', async () => {});
-it('반복 설정이 적용된 이벤트를 삭제할 때, 적절하게 반복 설정이 적용된다', async () => {});

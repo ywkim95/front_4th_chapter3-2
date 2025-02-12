@@ -19,7 +19,7 @@ export const setupMockHandlerCreation = (initEvents = [] as Event[]) => {
       };
       mockEvents.push(newEvent);
       return HttpResponse.json(newEvent, { status: 201 });
-    }),
+    })
   );
 };
 
@@ -38,10 +38,10 @@ export const setupMockHandlerUpdating = () => {
       mockEvents.splice(
         mockEvents.findIndex((event) => event.id === id),
         1,
-        { ...event, ...form },
+        { ...event, ...form }
       );
       return HttpResponse.json({ ...event, ...form }, { status: 200 });
-    }),
+    })
   );
 };
 
@@ -59,6 +59,8 @@ export const setupMockHandlerDeletion = () => {
       }
       mockEvents.splice(eventIndex, 1);
       return new HttpResponse(null, { status: 204 });
-    }),
+    })
   );
 };
+
+export const setupMockHandlerListCreation = () => {};
