@@ -144,4 +144,27 @@ export function getRepeatText(repeat: Omit<RepeatType, 'none'>) {
   }
 }
 
-export function getAddedDate(date: Date, interval: number, dateType: RepeatType) {}
+export function getAddedDate(date: Date, interval: number, dateType: RepeatType) {
+  const newDate = new Date(date);
+  if (dateType === 'daily') {
+    newDate.setDate(date.getDate() + interval);
+    return newDate;
+  } else if (dateType === 'weekly') {
+    newDate.setDate(date.getDate() + interval * 7);
+    return newDate;
+  } else if (dateType === 'monthly') {
+    newDate.setMonth(date.getMonth() + interval);
+
+    const originalDate = date.getDate();
+    if (newDate.getDate() !== originalDate) {
+      newDate.setDate(0);
+    }
+
+    return newDate;
+  } else if (dateType === 'yearly') {
+    newDate.setFullYear(date.getFullYear() + interval);
+    return newDate;
+  } else {
+    return newDate;
+  }
+}

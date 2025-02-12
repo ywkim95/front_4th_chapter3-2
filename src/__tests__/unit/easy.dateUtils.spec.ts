@@ -385,7 +385,7 @@ describe('getRepeatText', () => {
 });
 
 describe('getAddedDate', () => {
-  const date = new Date('2024-01-31');
+  const date = new Date('2024-07-31');
   const interval = 1;
   it('반복 유형이 없을 경우 날짜를 그대로 반환한다.', () => {
     const type: RepeatType = 'none';
@@ -395,21 +395,33 @@ describe('getAddedDate', () => {
   it('다음 날의 날짜를 반환하려면 반복 유형이 "일"이 되어야 한다.', () => {
     const type: RepeatType = 'daily';
     const newDate = getAddedDate(date, interval, type);
-    expect(newDate).toEqual(new Date('2024-02-01'));
+    expect(newDate).toEqual(new Date('2024-08-01'));
   });
   it('다음 주의 날짜를 반환하려면 반복 유형이 "주"가 되어야 한다.', () => {
     const type: RepeatType = 'weekly';
     const newDate = getAddedDate(date, interval, type);
-    expect(newDate).toEqual(new Date('2024-02-07'));
+    expect(newDate).toEqual(new Date('2024-08-07'));
   });
   it('다음 달의 날짜를 반환하려면 반복 유형이 "월"이 되어야 한다.', () => {
     const type: RepeatType = 'monthly';
     const newDate = getAddedDate(date, interval, type);
+    expect(newDate).toEqual(new Date('2024-08-31'));
+  });
+  it('다음 달의 날짜를 반환할 때, 다음 달이 이번 달보다 적은 날짜일 때 다음 달의 마지막 날을 반환한다.', () => {
+    const date = new Date('2024-01-31');
+    const type: RepeatType = 'monthly';
+    const newDate = getAddedDate(date, interval, type);
     expect(newDate).toEqual(new Date('2024-02-29'));
+  });
+  it('다음 달의 날짜를 반환할 때, 다음 달이 이번 달보다 많은 날짜일 때 다음 달의 같은 날짜를 반환한다.', () => {
+    const date = new Date('2024-04-30');
+    const type: RepeatType = 'monthly';
+    const newDate = getAddedDate(date, interval, type);
+    expect(newDate).toEqual(new Date('2024-05-30'));
   });
   it('다음 해의 날짜를 반환하려면 반복 유형이 "년"이 되어야 한다.', () => {
     const type: RepeatType = 'yearly';
     const newDate = getAddedDate(date, interval, type);
-    expect(newDate).toEqual(new Date('2025-01-31'));
+    expect(newDate).toEqual(new Date('2025-07-31'));
   });
 });
