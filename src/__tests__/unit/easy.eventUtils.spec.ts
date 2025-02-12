@@ -208,7 +208,6 @@ describe('generateRepeatedEvents', () => {
     };
 
     const repeatedEvents = generateRepeatedEvents(newEventForm, mockRepeatCount);
-    console.log(repeatedEvents);
     expect(repeatedEvents).toHaveLength(5);
   });
   it('매월 반복 설정이 있는 이벤트는 반복 설정에 따라 이벤트 리스트를 반환한다.', () => {
