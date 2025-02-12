@@ -7,6 +7,7 @@ import {
   setupMockHandlerListCreation,
   setupMockHandlerEditRepeatEvent,
   setupMockHandlerUpdating,
+  setupMockHandlerDeleteRepeatEvent,
 } from '../../__mocks__/handlersUtils.ts';
 import { events } from '../../__mocks__/response/events.json' assert { type: 'json' };
 import { useEventOperations } from '../../hooks/useEventOperations.ts';
@@ -242,9 +243,10 @@ describe('이벤트 반복 설정', () => {
       },
     ];
 
-    await act(() => Promise.resolve(null));
+    await act(() => new Promise((resolve) => setTimeout(resolve, 0)));
     expect(result.current.events).toEqual(newEvents);
   });
+
   it('기존 이벤트를 수정할 때, 반복 설정이 있으면 단일 이벤트로 변경된다.', async () => {
     const events: Event[] = [
       {
@@ -289,5 +291,41 @@ describe('이벤트 반복 설정', () => {
     await act(() => Promise.resolve(null));
     expect(result.current.events).toEqual(updatedEvents);
   });
-  it('반복 설정이 적용된 이벤트를 삭제할 때, 적절하게 반복 설정이 적용된다', async () => {});
+  it('반복 설정이 적용된 이벤트를 삭제할 때, 해당 반복 일정만 삭제된다.', async () => {
+    const events: Event[] = [
+      {
+        id: '1',
+        ...mockEventForm,
+        date: '2024-07-16',
+        repeat: {
+          type: 'daily',
+          interval: 10,
+          endDate: '2024-07-31',
+          id: '1',
+        },
+      },
+      {
+        id: '2',
+        ...mockEventForm,
+        date: '2024-07-26',
+        repeat: {
+          type: 'daily',
+          interval: 10,
+          endDate: '2024-07-31',
+          id: '1',
+        },
+      },
+    ];
+
+    const deletedEventId = '1';
+    setupMockHandlerDeleteRepeatEvent(events);
+
+    const { result } = renderHook(() => useEventOperations(false));
+
+    await act(async () => {
+      await result.current.deleteEvent(deletedEventId);
+    });
+
+    expect(result.current.events).toEqual([events[1]]);
+  });
 });

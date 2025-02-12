@@ -72,7 +72,7 @@ server.use(
     const data = (await request.json()) as EventForm[];
     const repeatId = `${mockEvents.length + 1}`;
 
-    const newEvents = data.map((event, index) => ({
+    const newEvents: Event[] = data.map((event, index) => ({
       id: String(mockEvents.length + index + 1),
       ...event,
       repeat: {
@@ -91,7 +91,7 @@ export const setupMockHandlerEditRepeatEvent = (events: Event[] = []) => {
   const mockEvents = structuredClone(events) as Event[];
 
   server.use(
-    http.get('/api/events', () => HttpResponse.json({ events: mockEvents })),
+    http.get('/api/events', () => HttpResponse.json({ events: mockEvents }, { status: 200 })),
     http.put('/api/events/:id', async ({ params, request }) => {
       const { id } = params;
       const form = (await request.json()) as Event;
@@ -108,3 +108,5 @@ export const setupMockHandlerEditRepeatEvent = (events: Event[] = []) => {
     })
   );
 };
+
+export const setupMockHandlerDeleteRepeatEvent = (events: Event[] = []) => {};
