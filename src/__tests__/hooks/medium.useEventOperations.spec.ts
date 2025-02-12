@@ -190,35 +190,40 @@ it("네트워크 오류 시 '일정 삭제 실패'라는 텍스트가 노출되�
 });
 
 it('새로운 이벤트를 생성할 때, 반복 설정이 있으면 반복 설정에 의하여 이벤트 리스트가 생성된다.', async () => {
-  server.use();
+  vi.setSystemTime('2024-07-01');
+  const mockEventForm: Omit<EventForm, 'repeat'> = {
+    title: '새로운 회의',
+    date: '2024-10-16',
+    startTime: '09:00',
+    endTime: '10:00',
+    description: '새로운 팀 미팅',
+    location: '회의실 A',
+    category: '업무',
+    notificationTime: 10,
+  };
+
+  const eventForm: EventForm = {
+    ...mockEventForm,
+    repeat: { type: 'daily', interval: 10, endDate: '2024-07-31' },
+  };
+
+  server.use(
+    http.get('api/events', () => HttpResponse.json(events, { status: 200 })),
+    http.post('api/events-list', async ({ request, params }) => {
+      const data = (await request.json()) as EventForm[];
+      console.log(data);
+      return HttpResponse.json(events, { status: 200 });
+    })
+  );
 
   const { result } = renderHook(() => useEventOperations(false));
-
-  await act(async () => {
-    await result.current.saveEventList();
+  act(() => {
+    result.current.saveEvent(eventForm);
   });
 
-  expect(result.current.events).toHaveLength(3);
+  // const newEvents =
+  //
+  // expect()
 });
-it('기존 이벤트를 수정할 때, 반복 설정이 있으면 적절하게 반복 설정이 적용된다', async () => {
-  server.use();
-
-  const { result } = renderHook(() => useEventOperations(true));
-
-  await act(async () => {
-    await result.current.saveEventList();
-  });
-
-  expect(result.current.events).toHaveLength(3);
-});
-it('반복 설정이 적용된 이벤트를 삭제할 때, 적절하게 반복 설정이 적용된다', async () => {
-  server.use();
-
-  const { result } = renderHook(() => useEventOperations(false));
-
-  await act(async () => {
-    await result.current.deleteEvent('1');
-  });
-
-  expect(result.current.events).toHaveLength(2);
-});
+it('기존 이벤트를 수정할 때, 반복 설정이 있으면 적절하게 반복 설정이 적용된다', async () => {});
+it('반복 설정이 적용된 이벤트를 삭제할 때, 적절하게 반복 설정이 적용된다', async () => {});

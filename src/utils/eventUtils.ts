@@ -88,7 +88,10 @@ export function calculateMaxEventCount(eventData: Event | EventForm): number {
   }
 }
 
-export const generateRepeatedEvents = (eventData: EventForm, count: number): EventForm[] => {
+export const generateRepeatedEvents = (
+  eventData: EventForm | Event,
+  count: number
+): EventForm[] | Event[] => {
   const baseDate = new Date(eventData.date);
   const endDate = eventData.repeat.endDate ? new Date(eventData.repeat.endDate) : null;
 

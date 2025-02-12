@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { DEFAULT_TOAST_DURATION, TOAST_STATUS, TOAST_MESSAGES } from '../toastConfig.ts';
 import { Event, EventForm } from '../types';
+import { calculateMaxEventCount, generateRepeatedEvents } from '../utils/eventUtils.ts';
 
 export const useEventOperations = (editing: boolean, onSave?: () => void) => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -31,17 +32,37 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
     try {
       let response;
       if (editing) {
-        response = await fetch(`/api/events/${(eventData as Event).id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(eventData),
-        });
+        if (eventData.repeat.type !== 'none') {
+          const maxEventCount = calculateMaxEventCount(eventData);
+          const newEvents = generateRepeatedEvents(eventData, maxEventCount) as Event[];
+          response = await fetch(`/api/events/${(eventData as Event).id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newEvents),
+          });
+        } else {
+          response = await fetch(`/api/events/${(eventData as Event).id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(eventData),
+          });
+        }
       } else {
-        response = await fetch('/api/events', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(eventData),
-        });
+        if (eventData.repeat.type !== 'none') {
+          const maxEventCount = calculateMaxEventCount(eventData);
+          const newEvents = generateRepeatedEvents(eventData, maxEventCount) as EventForm[];
+          response = await fetch('/api/events-list', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newEvents),
+          });
+        } else {
+          response = await fetch('/api/events', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(eventData),
+          });
+        }
       }
 
       if (!response.ok) {
@@ -103,13 +124,10 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
     });
   }
 
-  const saveEventList = () => {};
-  const deleteEventList = () => {};
-
   useEffect(() => {
     init();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { events, fetchEvents, saveEvent, deleteEvent, saveEventList, deleteEventList };
+  return { events, fetchEvents, saveEvent, deleteEvent };
 };
