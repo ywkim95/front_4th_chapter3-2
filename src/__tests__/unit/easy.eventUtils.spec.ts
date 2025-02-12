@@ -125,12 +125,7 @@ describe('calculateMaxEventCount', () => {
       repeat: { type: 'daily', interval: 1 },
     };
     const eventCount = calculateMaxEventCount(newEventData);
-
-    const startDate = new Date(newEventData.date);
-    const endDate = new Date('2025-06-30');
-    const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    expect(eventCount).toBe(diffDays);
+    expect(eventCount).toBe(365);
   });
   it('2025-04-30까지의 이벤트 개수를 반환하려면, 반복 유형이 매일이고 반복 간격이 1이며 종료일은 2025-04-30이어야 한다.', () => {
     const newEventData: Event = {
@@ -138,11 +133,36 @@ describe('calculateMaxEventCount', () => {
       repeat: { type: 'daily', interval: 1, endDate: '2025-04-30' },
     };
     const eventCount = calculateMaxEventCount(newEventData);
+    expect(eventCount).toBe(304);
+  });
+
+  it('2025-04-30까지의 이벤트 개수를 반환하려면, 반복 유형이 매주이고 반복 간격이 1이며 종료일은 2025-04-30이어야 한다.', () => {
+    const newEventData: Event = {
+      ...eventData,
+      repeat: { type: 'weekly', interval: 1, endDate: '2025-04-30' },
+    };
+    const eventCount = calculateMaxEventCount(newEventData);
 
     const startDate = new Date(newEventData.date);
-    const endDate = new Date(newEventData.repeat.endDate as string);
+    const endDate = new Date(`${newEventData.repeat.endDate as string}T23:59:59.000Z`);
     const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    expect(eventCount).toBe(diffDays);
+    const diffWeeks = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 7));
+    expect(eventCount).toBe(diffWeeks);
+  });
+  it('2025-04-30까지의 이벤트 개수를 반환하려면, 반복 유형이 매월이고 반복 간격이 1이며 종료일은 2025-04-30이어야 한다.', () => {
+    const newEventData: Event = {
+      ...eventData,
+      repeat: { type: 'monthly', interval: 1, endDate: '2025-04-30' },
+    };
+    const eventCount = calculateMaxEventCount(newEventData);
+    expect(eventCount).toBe(10);
+  });
+  it('2025-04-30까지의 이벤트 개수를 반환하려면, 반복 유형이 매년이고 반복 간격이 1이며 종료일은 2025-04-30이어야 한다.', () => {
+    const newEventData: Event = {
+      ...eventData,
+      repeat: { type: 'yearly', interval: 1, endDate: '2025-04-30' },
+    };
+    const eventCount = calculateMaxEventCount(newEventData);
+    expect(eventCount).toBe(1);
   });
 });

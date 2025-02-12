@@ -75,13 +75,19 @@ export function calculateMaxEventCount(eventData: Event | EventForm): number {
     return 1;
   }
   const start = new Date();
-  const end = new Date(eventData.repeat.endDate ?? MAX_INTERVAL_DATE);
-  let count = 0;
-  while (start < end) {
-    count++;
-    start.setDate(start.getDate() + eventData.repeat.interval);
-    console.log(start);
-  }
+  const end = new Date(`${eventData.repeat.endDate ?? MAX_INTERVAL_DATE}T23:59:59.000Z`);
+  console.log(start, end);
+  const isDaily = eventData.repeat.type === 'daily';
+  const isWeekly = eventData.repeat.type === 'weekly';
+  const isMonthly = eventData.repeat.type === 'monthly';
 
-  return count;
+  if (isDaily) {
+    return Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+  } else if (isWeekly) {
+    return Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24 * 7));
+  } else if (isMonthly) {
+    return (end.getFullYear() - start.getFullYear()) * 12 + end.getMonth() - start.getMonth();
+  } else {
+    return end.getFullYear() - start.getFullYear();
+  }
 }
