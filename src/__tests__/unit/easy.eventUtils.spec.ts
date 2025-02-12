@@ -1,7 +1,11 @@
 import { beforeEach, describe } from 'vitest';
 
-import { Event } from '../../types';
-import { calculateMaxEventCount, getFilteredEvents } from '../../utils/eventUtils';
+import { Event, EventForm } from '../../types';
+import {
+  calculateMaxEventCount,
+  generateRepeatedEvents,
+  getFilteredEvents,
+} from '../../utils/eventUtils';
 
 describe('getFilteredEvents', () => {
   const events: Event[] = [
@@ -168,9 +172,61 @@ describe('calculateMaxEventCount', () => {
 });
 
 describe('generateRepeatedEvents', () => {
-  it('반복 설정이 없는 이벤트는 자기 자신만을 반환한다.', () => {});
-  it('매일 반복 설정이 있는 이벤트는 반복 설정에 따라 이벤트 리스트를 반환한다.', () => {});
-  it('매주 반복 설정이 있는 이벤트는 반복 설정에 따라 이벤트 리스트를 반환한다.', () => {});
-  it('매월 반복 설정이 있는 이벤트는 반복 설정에 따라 이벤트 리스트를 반환한다.', () => {});
-  it('매년 반복 설정이 있는 이벤트는 반복 설정에 따라 이벤트 리스트를 반환한다.', () => {});
+  const mockRepeatCount = 5;
+  const mockEventForm: Omit<EventForm, 'repeat'> = {
+    title: '새로운 회의',
+    date: '2024-10-16',
+    startTime: '09:00',
+    endTime: '10:00',
+    description: '새로운 팀 미팅',
+    location: '회의실 A',
+    category: '업무',
+    notificationTime: 10,
+  };
+  it('반복 설정이 없는 이벤트는 자기 자신만을 반환한다.', () => {
+    const newEventForm: EventForm = {
+      ...mockEventForm,
+      repeat: { type: 'none', interval: 0 },
+    };
+
+    const repeatedEvents = generateRepeatedEvents(newEventForm, 1);
+    expect(repeatedEvents).toEqual([newEventForm]);
+  });
+  it('매일 반복 설정이 있는 이벤트는 반복 설정에 따라 이벤트 리스트를 반환한다.', () => {
+    const newEventForm: EventForm = {
+      ...mockEventForm,
+      repeat: { type: 'daily', interval: 5 },
+    };
+
+    const repeatedEvents = generateRepeatedEvents(newEventForm, mockRepeatCount);
+    expect(repeatedEvents).toHaveLength(5);
+  });
+  it('매주 반복 설정이 있는 이벤트는 반복 설정에 따라 이벤트 리스트를 반환한다.', () => {
+    const newEventForm: EventForm = {
+      ...mockEventForm,
+      repeat: { type: 'weekly', interval: 3 },
+    };
+
+    const repeatedEvents = generateRepeatedEvents(newEventForm, mockRepeatCount);
+    console.log(repeatedEvents);
+    expect(repeatedEvents).toHaveLength(5);
+  });
+  it('매월 반복 설정이 있는 이벤트는 반복 설정에 따라 이벤트 리스트를 반환한다.', () => {
+    const newEventForm: EventForm = {
+      ...mockEventForm,
+      repeat: { type: 'monthly', interval: 2 },
+    };
+
+    const repeatedEvents = generateRepeatedEvents(newEventForm, mockRepeatCount);
+    expect(repeatedEvents).toHaveLength(5);
+  });
+  it('매년 반복 설정이 있는 이벤트는 반복 설정에 따라 이벤트 리스트를 반환한다.', () => {
+    const newEventForm: EventForm = {
+      ...mockEventForm,
+      repeat: { type: 'yearly', interval: 1 },
+    };
+
+    const repeatedEvents = generateRepeatedEvents(newEventForm, mockRepeatCount);
+    expect(repeatedEvents).toHaveLength(5);
+  });
 });

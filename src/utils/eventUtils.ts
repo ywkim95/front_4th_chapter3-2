@@ -1,5 +1,5 @@
 import { Event, EventForm } from '../types';
-import { getWeekDates, isDateInRange } from './dateUtils';
+import { formatDate, getAddedDate, getWeekDates, isDateInRange } from './dateUtils';
 import { useEventForm } from '../hooks/useEventForm.ts';
 
 function filterEventsByDateRange(events: Event[], start: Date, end: Date): Event[] {
@@ -88,4 +88,24 @@ export function calculateMaxEventCount(eventData: Event | EventForm): number {
   }
 }
 
-export const generateRepeatedEvents = (eventData: EventForm, count: number): EventForm[] => {};
+export const generateRepeatedEvents = (eventData: EventForm, count: number): EventForm[] => {
+  const baseDate = new Date(eventData.date);
+  const endDate = eventData.repeat.endDate ? new Date(eventData.repeat.endDate) : null;
+
+  return Array.from({ length: count }, (_, i) => {
+    const newDate = getAddedDate(
+      baseDate,
+      eventData.repeat.interval * (i + 1),
+      eventData.repeat.type
+    );
+
+    if (endDate && newDate > endDate) {
+      return null;
+    }
+
+    return {
+      ...eventData,
+      date: formatDate(newDate),
+    };
+  }).filter((event): event is EventForm => event !== null);
+};
