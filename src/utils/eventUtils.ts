@@ -87,3 +87,5 @@ export function calculateMaxEventCount(eventData: Event | EventForm): number {
       return 1;
   }
 }
+
+export const generateRepeatedEvents = (eventData: EventForm, count: number): EventForm[] => {};
