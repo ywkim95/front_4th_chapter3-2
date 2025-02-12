@@ -5,12 +5,14 @@ import {
   setupMockHandlerCreation,
   setupMockHandlerDeletion,
   setupMockHandlerListCreation,
+  setupMockHandlerEditRepeatEvent,
   setupMockHandlerUpdating,
 } from '../../__mocks__/handlersUtils.ts';
 import { events } from '../../__mocks__/response/events.json' assert { type: 'json' };
 import { useEventOperations } from '../../hooks/useEventOperations.ts';
 import { server } from '../../setupTests.ts';
 import { Event, EventForm } from '../../types.ts';
+
 const mockToast = vi.fn();
 vi.mock('@chakra-ui/react', async () => {
   const actual = await vi.importActual('@chakra-ui/react');
@@ -243,6 +245,49 @@ describe('이벤트 반복 설정', () => {
     await act(() => Promise.resolve(null));
     expect(result.current.events).toEqual(newEvents);
   });
-  it('기존 이벤트를 수정할 때, 반복 설정이 있으면 단일 이벤트로 변경된다.', async () => {});
+  it('기존 이벤트를 수정할 때, 반복 설정이 있으면 단일 이벤트로 변경된다.', async () => {
+    const events: Event[] = [
+      {
+        id: '1',
+        ...mockEventForm,
+        date: '2024-07-16',
+        repeat: {
+          type: 'daily',
+          interval: 10,
+          endDate: '2024-07-31',
+          id: '1',
+        },
+      },
+      {
+        id: '2',
+        ...mockEventForm,
+        date: '2024-07-26',
+        repeat: {
+          type: 'daily',
+          interval: 10,
+          endDate: '2024-07-31',
+          id: '1',
+        },
+      },
+    ];
+
+    setupMockHandlerEditRepeatEvent(events);
+
+    const mockEditedEvent: Event = {
+      ...events[0],
+      title: '수정된 회의',
+      repeat: { type: 'none', interval: 0 },
+    };
+
+    const { result } = renderHook(() => useEventOperations(true));
+    await act(async () => {
+      await result.current.saveEvent(mockEditedEvent);
+    });
+
+    const updatedEvents: Event[] = [mockEditedEvent, events[1]];
+
+    await act(() => Promise.resolve(null));
+    expect(result.current.events).toEqual(updatedEvents);
+  });
   it('반복 설정이 적용된 이벤트를 삭제할 때, 적절하게 반복 설정이 적용된다', async () => {});
 });

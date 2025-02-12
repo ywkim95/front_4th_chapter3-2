@@ -86,3 +86,5 @@ server.use(
     return HttpResponse.json(newEvents, { status: 201 });
   })
 );
+
+export const setupMockHandlerEditRepeatEvent = (events: Event[] = []) => {};
