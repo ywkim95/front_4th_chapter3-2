@@ -146,25 +146,44 @@ export function getRepeatText(repeat: Omit<RepeatType, 'none'>) {
 
 export function getAddedDate(date: Date, interval: number, dateType: RepeatType) {
   const newDate = new Date(date);
-  if (dateType === 'daily') {
-    newDate.setDate(date.getDate() + interval);
-    return newDate;
-  } else if (dateType === 'weekly') {
-    newDate.setDate(date.getDate() + interval * 7);
-    return newDate;
-  } else if (dateType === 'monthly') {
-    newDate.setMonth(date.getMonth() + interval);
-
-    const originalDate = date.getDate();
-    if (newDate.getDate() !== originalDate) {
-      newDate.setDate(0);
-    }
-
-    return newDate;
-  } else if (dateType === 'yearly') {
-    newDate.setFullYear(date.getFullYear() + interval);
-    return newDate;
-  } else {
-    return newDate;
+  switch (dateType) {
+    case 'daily':
+      return addDays(newDate, interval);
+    case 'weekly':
+      return addWeeks(newDate, interval);
+    case 'monthly':
+      return addMonths(newDate, interval);
+    case 'yearly':
+      return addYears(newDate, interval);
+    default:
+      return newDate;
   }
+}
+
+function addDays(date: Date, interval: number) {
+  const newDate = new Date(date);
+  newDate.setDate(date.getDate() + interval);
+  return newDate;
+}
+
+function addWeeks(date: Date, interval: number) {
+  return addDays(date, interval * 7);
+}
+
+function addMonths(date: Date, interval: number) {
+  const newDate = new Date(date);
+  newDate.setMonth(date.getMonth() + interval);
+
+  // 월말일 처리 (예: 1월 31일에서 한 달 더하면 2월 28일이 되어야 함)
+  const originalDay = date.getDate();
+  if (newDate.getDate() !== originalDay) {
+    newDate.setDate(0);
+  }
+  return newDate;
+}
+
+function addYears(date: Date, interval: number) {
+  const newDate = new Date(date);
+  newDate.setFullYear(date.getFullYear() + interval);
+  return newDate;
 }
