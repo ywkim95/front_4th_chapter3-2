@@ -96,11 +96,7 @@ export const generateRepeatedEvents = (
   const endDate = eventData.repeat.endDate ? new Date(eventData.repeat.endDate) : null;
 
   return Array.from({ length: count }, (_, i) => {
-    const newDate = getAddedDate(
-      baseDate,
-      eventData.repeat.interval * (i + 1),
-      eventData.repeat.type
-    );
+    const newDate = getAddedDate(baseDate, eventData.repeat.interval * i, eventData.repeat.type);
 
     if (endDate && newDate > endDate) {
       return null;
