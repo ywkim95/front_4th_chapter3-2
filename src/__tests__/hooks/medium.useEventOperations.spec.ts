@@ -243,6 +243,6 @@ describe('이벤트 반복 설정', () => {
     await act(() => Promise.resolve(null));
     expect(result.current.events).toEqual(newEvents);
   });
-  it('기존 이벤트를 수정할 때, 반복 설정이 있으면 적절하게 반복 설정이 적용된다', async () => {});
+  it('기존 이벤트를 수정할 때, 반복 설정이 있으면 단일 이벤트로 변경된다.', async () => {});
   it('반복 설정이 적용된 이벤트를 삭제할 때, 적절하게 반복 설정이 적용된다', async () => {});
 });
