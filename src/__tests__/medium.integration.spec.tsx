@@ -96,15 +96,8 @@ describe('일정 CRUD 및 기본 기능', () => {
     const notificationSelect = screen.getByLabelText(/알림 설정/i);
     await user.selectOptions(notificationSelect, '1시간 전');
 
-    const repeatTypeSelect = screen.getByLabelText(/반복 유형/i);
-    await user.selectOptions(repeatTypeSelect, '매주');
-
-    const repeatTermInput = screen.getByLabelText(/반복 간격/i);
-    await user.clear(repeatTermInput);
-    await user.type(repeatTermInput, '2');
-
-    const repeatEndDateInput = screen.getByLabelText(/반복 종료일/i);
-    await user.type(repeatEndDateInput, '2025-03-25');
+    const repeatSelect = screen.getByLabelText(/반복 설정/i);
+    await user.click(repeatSelect);
 
     const button = screen.getByTestId('event-submit-button');
     await user.click(button);
