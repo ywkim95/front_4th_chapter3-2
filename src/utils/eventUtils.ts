@@ -16,7 +16,7 @@ function containsTerm(target: string, term: string) {
 function searchEvents(events: Event[], term: string) {
   return events.filter(
     ({ title, description, location }) =>
-      containsTerm(title, term) || containsTerm(description, term) || containsTerm(location, term),
+      containsTerm(title, term) || containsTerm(description, term) || containsTerm(location, term)
   );
 }
 
@@ -35,7 +35,7 @@ export function getFilteredEvents(
   events: Event[],
   searchTerm: string,
   currentDate: Date,
-  view: 'week' | 'month',
+  view: 'week' | 'month'
 ): Event[] {
   const searchedEvents = searchEvents(events, searchTerm);
 
@@ -67,4 +67,21 @@ export function getEventData(eventForm: ReturnType<typeof useEventForm>): Event 
     },
     notificationTime: eventForm.notificationTime,
   };
+}
+
+export function calculateMaxEventCount(eventData: Event | EventForm): number {
+  const MAX_INTERVAL_DATE = '2025-06-30';
+  if (eventData.repeat.type === 'none') {
+    return 1;
+  }
+  const start = new Date();
+  const end = new Date(eventData.repeat.endDate ?? MAX_INTERVAL_DATE);
+  let count = 0;
+  while (start < end) {
+    count++;
+    start.setDate(start.getDate() + eventData.repeat.interval);
+    console.log(start);
+  }
+
+  return count;
 }

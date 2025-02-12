@@ -1,4 +1,4 @@
-import { describe } from 'vitest';
+import { beforeEach, describe } from 'vitest';
 
 import { Event } from '../../types';
 import { calculateMaxEventCount, getFilteredEvents } from '../../utils/eventUtils';
@@ -110,6 +110,11 @@ describe('calculateMaxEventCount', () => {
     repeat: { type: 'none', interval: 0 },
     notificationTime: 10,
   };
+
+  beforeEach(() => {
+    vi.setSystemTime(new Date('2024-07-01'));
+  });
+
   it('반복 간격이 0이면 1을 반환한다.', () => {
     const eventCount = calculateMaxEventCount(eventData);
     expect(eventCount).toBe(1);
