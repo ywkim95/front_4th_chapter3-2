@@ -1,11 +1,12 @@
 import { describe } from 'vitest';
 
-import { Event } from '../../types';
+import { Event, RepeatType } from '../../types';
 import {
   fillZero,
   formatDate,
   formatMonth,
   formatWeek,
+  getAddedDate,
   getDateUnit,
   getDaysInMonth,
   getEventsForDay,
@@ -380,5 +381,35 @@ describe('getRepeatText', () => {
   it('매주 반복에 대한 텍스트를 반환한다', () => {
     const result = getRepeatText('weekly');
     expect(result).toBe('매주');
+  });
+});
+
+describe('getAddedDate', () => {
+  const date = new Date('2024-01-31');
+  const interval = 1;
+  it('반복 유형이 없을 경우 날짜를 그대로 반환한다.', () => {
+    const type: RepeatType = 'none';
+    const newDate = getAddedDate(date, interval, type);
+    expect(newDate).toEqual(date);
+  });
+  it('다음 날의 날짜를 반환하려면 반복 유형이 "일"이 되어야 한다.', () => {
+    const type: RepeatType = 'daily';
+    const newDate = getAddedDate(date, interval, type);
+    expect(newDate).toEqual(new Date('2024-02-01'));
+  });
+  it('다음 주의 날짜를 반환하려면 반복 유형이 "주"가 되어야 한다.', () => {
+    const type: RepeatType = 'weekly';
+    const newDate = getAddedDate(date, interval, type);
+    expect(newDate).toEqual(new Date('2024-02-07'));
+  });
+  it('다음 달의 날짜를 반환하려면 반복 유형이 "월"이 되어야 한다.', () => {
+    const type: RepeatType = 'monthly';
+    const newDate = getAddedDate(date, interval, type);
+    expect(newDate).toEqual(new Date('2024-02-29'));
+  });
+  it('다음 해의 날짜를 반환하려면 반복 유형이 "년"이 되어야 한다.', () => {
+    const type: RepeatType = 'yearly';
+    const newDate = getAddedDate(date, interval, type);
+    expect(newDate).toEqual(new Date('2025-01-31'));
   });
 });

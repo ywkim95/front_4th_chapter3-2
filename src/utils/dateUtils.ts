@@ -143,3 +143,5 @@ export function getRepeatText(repeat: Omit<RepeatType, 'none'>) {
       return '매년';
   }
 }
+
+export function getAddedDate(date: Date, interval: number, dateType: RepeatType) {}
