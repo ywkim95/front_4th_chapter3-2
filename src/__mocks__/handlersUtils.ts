@@ -87,4 +87,24 @@ server.use(
   })
 );
 
-export const setupMockHandlerEditRepeatEvent = (events: Event[] = []) => {};
+export const setupMockHandlerEditRepeatEvent = (events: Event[] = []) => {
+  const mockEvents = structuredClone(events) as Event[];
+
+  server.use(
+    http.get('/api/events', () => HttpResponse.json({ events: mockEvents })),
+    http.put('/api/events/:id', async ({ params, request }) => {
+      const { id } = params;
+      const form = (await request.json()) as Event;
+      const event = mockEvents.find((event) => event.id === id);
+      if (!event) {
+        return HttpResponse.json('Event not found', { status: 404 });
+      }
+      mockEvents.splice(
+        mockEvents.findIndex((event) => event.id === id),
+        1,
+        { ...event, ...form }
+      );
+      return HttpResponse.json({ ...event, ...form }, { status: 200 });
+    })
+  );
+};
