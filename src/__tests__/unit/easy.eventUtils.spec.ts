@@ -1,5 +1,7 @@
+import { describe } from 'vitest';
+
 import { Event } from '../../types';
-import { getFilteredEvents } from '../../utils/eventUtils';
+import { calculateMaxEventCount, getFilteredEvents } from '../../utils/eventUtils';
 
 describe('getFilteredEvents', () => {
   const events: Event[] = [
@@ -92,5 +94,50 @@ describe('getFilteredEvents', () => {
   it('빈 이벤트 리스트에 대해 빈 배열을 반환한다', () => {
     const filteredEvents = getFilteredEvents([], '', new Date('2024-07-01'), 'week');
     expect(filteredEvents).toEqual([]);
+  });
+});
+
+describe('calculateMaxEventCount', () => {
+  const eventData: Event = {
+    id: '1',
+    title: 'event title',
+    date: '2024-07-01',
+    startTime: '09:00',
+    endTime: '10:00',
+    description: 'event description',
+    location: 'event location',
+    category: '업무',
+    repeat: { type: 'none', interval: 0 },
+    notificationTime: 10,
+  };
+  it('반복 간격이 0이면 1을 반환한다.', () => {
+    const eventCount = calculateMaxEventCount(eventData);
+    expect(eventCount).toBe(1);
+  });
+  it('2025-06-30까지의 이벤트 개수를 반환하려면, 반복 유형이 매일이고 반복 간격이 1이며 종료일이 없어야 한다.', () => {
+    const newEventData: Event = {
+      ...eventData,
+      repeat: { type: 'daily', interval: 1 },
+    };
+    const eventCount = calculateMaxEventCount(newEventData);
+
+    const startDate = new Date(newEventData.date);
+    const endDate = new Date('2025-06-30');
+    const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    expect(eventCount).toBe(diffDays);
+  });
+  it('2025-04-30까지의 이벤트 개수를 반환하려면, 반복 유형이 매일이고 반복 간격이 1이며 종료일은 2025-04-30이어야 한다.', () => {
+    const newEventData: Event = {
+      ...eventData,
+      repeat: { type: 'daily', interval: 1, endDate: '2025-04-30' },
+    };
+    const eventCount = calculateMaxEventCount(newEventData);
+
+    const startDate = new Date(newEventData.date);
+    const endDate = new Date(newEventData.repeat.endDate as string);
+    const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    expect(eventCount).toBe(diffDays);
   });
 });
