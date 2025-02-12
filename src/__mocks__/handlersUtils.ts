@@ -109,4 +109,20 @@ export const setupMockHandlerEditRepeatEvent = (events: Event[] = []) => {
   );
 };
 
-export const setupMockHandlerDeleteRepeatEvent = (events: Event[] = []) => {};
+export const setupMockHandlerDeleteRepeatEvent = (events: Event[] = []) => {
+  const mockEvents = structuredClone(events) as Event[];
+
+  server.use(
+    http.get('/api/events', () => HttpResponse.json({ events: mockEvents }, { status: 200 })),
+    http.delete('/api/events/:id', ({ params }) => {
+      const { id } = params;
+      const eventIndex = mockEvents.findIndex((event) => event.id === id);
+
+      if (eventIndex === -1) {
+        return HttpResponse.json('Event not found', { status: 404 });
+      }
+      mockEvents.splice(eventIndex, 1);
+      return new HttpResponse(null, { status: 204 });
+    })
+  );
+};

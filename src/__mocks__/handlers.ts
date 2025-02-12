@@ -32,4 +32,17 @@ export const handlers = [
     events.splice(eventIndex, 1);
     return HttpResponse.text('Event deleted', { status: 204 });
   }),
+  http.post('/api/events-list', async ({ request }) => {
+    const newEvents = (await request.json()) as EventForm[];
+    const repeatId = String(events.length + 1);
+    const updatedEvents = newEvents.map((event, index) => ({
+      ...event,
+      id: String(events.length + index + 1),
+      repeat: {
+        ...event.repeat,
+        id: repeatId,
+      },
+    }));
+    return HttpResponse.json(updatedEvents, { status: 201 });
+  }),
 ];
