@@ -470,11 +470,14 @@ describe('일정 충돌', () => {
     const categoryInput = screen.getByLabelText(/카테고리/i);
     await user.selectOptions(categoryInput, '업무');
 
+    const repeatSelect = screen.getByLabelText(/반복 설정/i);
+    await user.click(repeatSelect);
+
     const button = screen.getByTestId('event-submit-button');
     await user.click(button);
 
-    const alert = screen.getByRole('alertdialog');
-    expect(alert).toHaveTextContent('일정 겹침 경고');
+    const alert = within(screen.getByRole('alertdialog'));
+    expect(alert.getByText('일정 겹침 경고')).toBeInTheDocument();
   });
 
   it('기존 일정의 시간을 수정하여 충돌이 발생하면 경고가 노출된다', async () => {
