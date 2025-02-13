@@ -63,29 +63,30 @@ export const setupMockHandlerDeletion = () => {
   );
 };
 
-export const setupMockHandlerListCreation = () => {};
-const mockEvents = [] as Event[];
+export const setupMockHandlerListCreation = () => {
+  const mockEvents = [] as Event[];
 
-server.use(
-  http.get('/api/events', () => HttpResponse.json({ events: mockEvents }, { status: 200 })),
-  http.post('/api/events-list', async ({ request }) => {
-    const data = (await request.json()) as EventForm[];
-    const repeatId = `${mockEvents.length + 1}`;
+  server.use(
+    http.get('/api/events', () => HttpResponse.json({ events: mockEvents }, { status: 200 })),
+    http.post('/api/events-list', async ({ request }) => {
+      const data = (await request.json()) as EventForm[];
+      const repeatId = `${mockEvents.length + 1}`;
 
-    const newEvents: Event[] = data.map((event, index) => ({
-      id: String(mockEvents.length + index + 1),
-      ...event,
-      repeat: {
-        ...event.repeat,
-        id: repeatId,
-      },
-    }));
+      const newEvents: Event[] = data.map((event, index) => ({
+        id: String(mockEvents.length + index + 1),
+        ...event,
+        repeat: {
+          ...event.repeat,
+          id: repeatId,
+        },
+      }));
 
-    mockEvents.push(...newEvents);
+      mockEvents.push(...newEvents);
 
-    return HttpResponse.json(newEvents, { status: 201 });
-  })
-);
+      return HttpResponse.json(newEvents, { status: 201 });
+    })
+  );
+};
 
 export const setupMockHandlerEditRepeatEvent = (events: Event[] = []) => {
   const mockEvents = structuredClone(events) as Event[];
