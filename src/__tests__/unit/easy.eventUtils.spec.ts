@@ -116,7 +116,7 @@ describe('calculateMaxEventCount', () => {
   };
 
   beforeEach(() => {
-    vi.setSystemTime(new Date('2024-07-01'));
+    vi.setSystemTime(new Date('2024-07-01T00:00:00.000Z'));
   });
 
   it('반복 간격이 0이면 1을 반환한다.', () => {
@@ -159,7 +159,12 @@ describe('calculateMaxEventCount', () => {
       repeat: { type: 'monthly', interval: 1, endDate: '2025-04-30' },
     };
     const eventCount = calculateMaxEventCount(newEventData);
-    expect(eventCount).toBe(10);
+
+    const startDate = new Date(newEventData.date);
+    const endDate = new Date(`${newEventData.repeat.endDate as string}T23:59:59.000Z`);
+    const diffYears = endDate.getFullYear() - startDate.getFullYear();
+    const diffMonths = diffYears * 12 + endDate.getMonth() - startDate.getMonth();
+    expect(eventCount).toBe(diffMonths);
   });
   it('2025-04-30까지의 이벤트 개수를 반환하려면, 반복 유형이 매년이고 반복 간격이 1이며 종료일은 2025-04-30이어야 한다.', () => {
     const newEventData: Event = {
