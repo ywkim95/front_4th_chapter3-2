@@ -69,10 +69,11 @@ export const setupMockHandlerListCreation = () => {
   server.use(
     http.get('/api/events', () => HttpResponse.json({ events: mockEvents }, { status: 200 })),
     http.post('/api/events-list', async ({ request }) => {
-      const data = (await request.json()) as EventForm[];
+      const data = (await request.json()) as { events: EventForm[] };
+      const events = data.events;
       const repeatId = `${mockEvents.length + 1}`;
 
-      const newEvents: Event[] = data.map((event, index) => ({
+      const newEvents: Event[] = events.map((event, index) => ({
         id: String(mockEvents.length + index + 1),
         ...event,
         repeat: {
