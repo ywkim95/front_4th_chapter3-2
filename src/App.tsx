@@ -4,6 +4,7 @@ import { useState } from 'react';
 import CalendarView from './components/CalendarView.tsx';
 import EventFormView from './components/EventFormView.tsx';
 import EventListView from './components/EventListView.tsx';
+import ModifyDialog from './components/ModifyDialog.tsx';
 import NotificationList from './components/NotificationList.tsx';
 import OverlapDialog from './components/OverlapDialog.tsx';
 import { useCalendarView } from './hooks/useCalendarView.ts';
@@ -19,7 +20,7 @@ import { getEventData } from './utils/eventUtils.ts';
 function App() {
   const eventForm = useEventForm();
 
-  const { events, saveEvent, deleteEvent } = useEventOperations(
+  const { events, saveEvent, deleteEvent, updateAllEvents } = useEventOperations(
     Boolean(eventForm.editingEvent),
     () => eventForm.setEditingEvent(null)
   );
@@ -30,11 +31,41 @@ function App() {
 
   const [isOverlapDialogOpen, setIsOverlapDialogOpen] = useState(false);
   const [overlappingEvents, setOverlappingEvents] = useState<Event[]>([]);
+  const [isModifyDialogOpen, setIsModifyDialogOpen] = useState(false);
 
   const toast = useToast();
 
+  const handleCloseUpdate = () => setIsModifyDialogOpen(false);
+
+  const handleSingleUpdate = async () => {
+    const eventData: Event = {
+      ...(getEventData(eventForm) as Event),
+      repeat: { type: 'none', interval: 0 },
+    };
+    await saveEvent(eventData);
+    setIsModifyDialogOpen(false);
+    eventForm.resetForm();
+  };
+
+  const handleAllUpdate = async () => {
+    const eventData = getEventData(eventForm) as Event;
+    await updateAllEvents(eventData);
+    setIsModifyDialogOpen(false);
+    eventForm.resetForm();
+  };
+
   const addOrUpdateEvent = async () => {
-    const { title, date, startTime, endTime, startTimeError, endTimeError, resetForm } = eventForm;
+    const {
+      title,
+      date,
+      startTime,
+      endTime,
+      isRepeating,
+      repeatType,
+      startTimeError,
+      endTimeError,
+      resetForm,
+    } = eventForm;
     if (!title || !date || !startTime || !endTime) {
       toast({
         title: TOAST_MESSAGES.REQUIRED,
@@ -55,6 +86,16 @@ function App() {
       return;
     }
 
+    if (isRepeating && repeatType === 'none') {
+      toast({
+        title: TOAST_MESSAGES.REPEAT,
+        status: TOAST_STATUS.ERROR,
+        duration: DEFAULT_TOAST_DURATION,
+        isClosable: true,
+      });
+      return;
+    }
+
     const eventData = getEventData(eventForm);
 
     const overlapping = findOverlappingEvents(eventData, events);
@@ -62,8 +103,12 @@ function App() {
       setOverlappingEvents(overlapping);
       setIsOverlapDialogOpen(true);
     } else {
-      await saveEvent(eventData);
-      resetForm();
+      if (eventForm.editingEvent && eventForm.editingEvent.repeat.type !== 'none') {
+        setIsModifyDialogOpen(true);
+      } else {
+        await saveEvent(eventData);
+        resetForm();
+      }
     }
   };
 
@@ -103,6 +148,13 @@ function App() {
         overlappingEvents={overlappingEvents}
         onClose={handleCloseOverlapDialog}
         onProceed={handleProceedOverlapDialog}
+      />
+
+      <ModifyDialog
+        isModifyDialogOpen={isModifyDialogOpen}
+        onProceedSingle={handleSingleUpdate}
+        onProceedAll={handleAllUpdate}
+        onClose={handleCloseUpdate}
       />
 
       {notifications.length > 0 && (
