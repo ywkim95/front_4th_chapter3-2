@@ -4,7 +4,7 @@ describe('필수 기능 테스트', () => {
   });
 
   after(() => {
-    cy.request('POST', 'http://localhost:3000/api/reset-events');
+    cy.request('POST', '/api/reset-events');
   });
 
   const getInputByLabel = (labelText) =>
@@ -85,14 +85,20 @@ describe('필수 기능 테스트', () => {
   });
 
   it('반복 일정 수정', () => {
-    cy.get('[data-testid=event-list]')
-      .find('button')
-      .get('[aria-label="Edit event"]')
-      .last()
-      .click();
+    cy.get('[aria-label="Edit event"]').last().click();
     getInputByLabel('제목').clear().type('수정된 반복 팀 회의');
     getInputByLabel('시작 시간').clear().type('11:00');
     getInputByLabel('종료 시간').clear().type('12:00');
     cy.get('button').contains('일정 수정').click();
+    cy.get('button').contains('단일 수정').click();
+    cy.get(':nth-child(4) > :nth-child(4)').should(
+      'not.contain',
+      cy.get('[data-testid="repeat-info"]')
+    );
+  });
+
+  it('반복 일정 삭제', () => {
+    cy.get('[aria-label="Delete event"]').eq(6).click();
+    cy.get('[data-testid=event-list]').find('*').contains('반복 팀 회의').should('have.length', 1);
   });
 });
