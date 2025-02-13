@@ -32,21 +32,11 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
     try {
       let response;
       if (editing) {
-        if (eventData.repeat.type !== 'none') {
-          const maxEventCount = calculateMaxEventCount(eventData);
-          const newEvents = generateRepeatedEvents(eventData, maxEventCount) as Event[];
-          response = await fetch(`/api/events/${(eventData as Event).id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newEvents),
-          });
-        } else {
-          response = await fetch(`/api/events/${(eventData as Event).id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(eventData),
-          });
-        }
+        response = await fetch(`/api/events/${(eventData as Event).id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(eventData),
+        });
       } else {
         if (eventData.repeat.type !== 'none') {
           const maxEventCount = calculateMaxEventCount(eventData);
@@ -54,7 +44,7 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
           response = await fetch('/api/events-list', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newEvents),
+            body: JSON.stringify({ events: newEvents }),
           });
         } else {
           response = await fetch('/api/events', {
@@ -78,6 +68,7 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
         isClosable: true,
       });
     } catch (error) {
+      onSave?.();
       console.error('Error saving event:', error);
       toast({
         title: TOAST_MESSAGES.SAVE_ERROR,
@@ -114,6 +105,61 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
     }
   };
 
+  const updateAllEvents = async (eventData: Event) => {
+    try {
+      const filteredEvents = events.filter(
+        (event) =>
+          event.repeat?.id && eventData.repeat?.id && event.repeat.id === eventData.repeat.id
+      );
+      const maxEventCount = calculateMaxEventCount(eventData);
+      const newEvents = generateRepeatedEvents(eventData, maxEventCount) as EventForm[];
+      const updatedEvents = filteredEvents.map((event, index) => {
+        const newEvent = newEvents[index];
+        return {
+          ...event,
+          title: newEvent.title,
+          date: newEvent.date,
+          startTime: newEvent.startTime,
+          endTime: newEvent.endTime,
+          description: newEvent.description,
+          location: newEvent.location,
+          category: newEvent.category,
+          notificationTime: newEvent.notificationTime,
+          repeat: {
+            ...event.repeat,
+            endDate: newEvent.date,
+          },
+        };
+      });
+
+      const response = await fetch('/api/events-list', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ events: updatedEvents }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update all events');
+      }
+
+      await fetchEvents();
+      toast({
+        title: TOAST_MESSAGES.MODIFY_SUCCESS,
+        status: TOAST_STATUS.SUCCESS,
+        duration: DEFAULT_TOAST_DURATION,
+        isClosable: true,
+      });
+    } catch (e) {
+      console.error('Error updating all events:', e);
+      toast({
+        title: TOAST_MESSAGES.SAVE_ERROR,
+        status: TOAST_STATUS.ERROR,
+        duration: DEFAULT_TOAST_DURATION,
+        isClosable: true,
+      });
+    }
+  };
+
   async function init() {
     const NO_CLOSABLE_DURATION = 1000;
     await fetchEvents();
@@ -129,5 +175,5 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { events, fetchEvents, saveEvent, deleteEvent };
+  return { events, fetchEvents, saveEvent, deleteEvent, updateAllEvents };
 };

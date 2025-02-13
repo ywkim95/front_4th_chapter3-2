@@ -61,6 +61,7 @@ export function getEventData(eventForm: ReturnType<typeof useEventForm>): Event 
     location: eventForm.location,
     category: eventForm.category,
     repeat: {
+      id: eventForm.editingEvent ? eventForm.editingEvent.repeat?.id : undefined,
       type: eventForm.isRepeating ? eventForm.repeatType : 'none',
       interval: eventForm.repeatInterval,
       endDate: eventForm.repeatEndDate || undefined,
