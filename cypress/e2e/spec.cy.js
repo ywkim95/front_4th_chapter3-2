@@ -3,6 +3,10 @@ describe('필수 기능 테스트', () => {
     cy.visit('http://localhost:5173');
   });
 
+  after(() => {
+    cy.request('POST', 'http://localhost:3000/api/reset-events');
+  });
+
   const getInputByLabel = (labelText) =>
     cy
       .contains('label', labelText)
@@ -78,5 +82,17 @@ describe('필수 기능 테스트', () => {
     getInputByLabel('반복 유형').select('weekly').select('daily');
     cy.get('label').contains('반복 종료일').type('2025-02-19');
     cy.get('button').contains('일정 추가').click();
+  });
+
+  it('반복 일정 수정', () => {
+    cy.get('[data-testid=event-list]')
+      .find('button')
+      .get('[aria-label="Edit event"]')
+      .last()
+      .click();
+    getInputByLabel('제목').clear().type('수정된 반복 팀 회의');
+    getInputByLabel('시작 시간').clear().type('11:00');
+    getInputByLabel('종료 시간').clear().type('12:00');
+    cy.get('button').contains('일정 수정').click();
   });
 });

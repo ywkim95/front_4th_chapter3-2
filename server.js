@@ -140,6 +140,15 @@ app.delete('/api/events-list', async (req, res) => {
   res.status(204).send();
 });
 
+app.post('/api/reset-events', async (_, res) => {
+  fs.copyFileSync(
+    `${__dirname}/src/__mocks__/response/origin_realEvents.json`,
+    `${__dirname}/src/__mocks__/response/realEvents.json`
+  );
+
+  res.status(204).send();
+});
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
