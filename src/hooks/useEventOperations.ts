@@ -127,11 +127,10 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
           notificationTime: newEvent.notificationTime,
           repeat: {
             ...event.repeat,
-            endDate: newEvent.date,
+            endDate: newEvent.repeat.endDate,
           },
         };
       });
-
       const response = await fetch('/api/events-list', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -142,6 +141,7 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
         throw new Error('Failed to update all events');
       }
 
+      onSave?.();
       await fetchEvents();
       toast({
         title: TOAST_MESSAGES.MODIFY_SUCCESS,
