@@ -128,3 +128,27 @@ export const setupMockHandlerDeleteRepeatEvent = (events: Event[] = []) => {
     })
   );
 };
+
+export const setupMockHandlerUpdateAllEvents = (events: Event[], updatedEvent: Event) => {
+  const mockEvents = structuredClone(events) as Event[];
+
+  server.use(
+    http.get('/api/events', () => HttpResponse.json({ events: mockEvents }, { status: 200 })),
+    http.put('/api/events-list', async ({ request }) => {
+      const data = (await request.json()) as { events: Event[] };
+      const updatedEvents = data.events;
+      const repeatId = updatedEvent.repeat?.id;
+
+      const firstEventIndex = mockEvents.findIndex((event) => event.repeat?.id === repeatId);
+
+      if (firstEventIndex === -1) {
+        return HttpResponse.json('Event not found', { status: 404 });
+      }
+
+      const deleteCount = mockEvents.filter((event) => event.repeat?.id === repeatId).length;
+      mockEvents.splice(firstEventIndex, deleteCount, ...updatedEvents);
+
+      return HttpResponse.json(updatedEvents, { status: 200 });
+    })
+  );
+};

@@ -8,6 +8,7 @@ import {
   setupMockHandlerEditRepeatEvent,
   setupMockHandlerUpdating,
   setupMockHandlerDeleteRepeatEvent,
+  setupMockHandlerUpdateAllEvents,
 } from '../../__mocks__/handlersUtils.ts';
 import { events } from '../../__mocks__/response/events.json' assert { type: 'json' };
 import { useEventOperations } from '../../hooks/useEventOperations.ts';
@@ -291,6 +292,65 @@ describe('이벤트 반복 설정', () => {
     await act(() => Promise.resolve(null));
     expect(result.current.events).toEqual(updatedEvents);
   });
+
+  it('반복 이벤트를 모두 수정할 때, 수정된 내용이 모든 반복 이벤트에 적용된다.', async () => {
+    const events: Event[] = [
+      {
+        id: '1',
+        ...mockEventForm,
+        date: '2024-07-16',
+        repeat: {
+          type: 'daily',
+          interval: 10,
+          endDate: '2024-07-31',
+          id: '1',
+        },
+      },
+      {
+        id: '2',
+        ...mockEventForm,
+        date: '2024-07-26',
+        repeat: {
+          type: 'daily',
+          interval: 10,
+          endDate: '2024-07-31',
+          id: '1',
+        },
+      },
+    ];
+
+    const mockUpdatedEvent: Event = {
+      ...events[0],
+      title: '수정된 회의',
+    };
+
+    setupMockHandlerUpdateAllEvents(events, mockUpdatedEvent);
+
+    const { result } = renderHook(() => useEventOperations(false));
+    await vi.waitFor(() => {
+      expect(result.current.events).toEqual(events);
+    });
+
+    await act(async () => {
+      await result.current.updateAllEvents(mockUpdatedEvent);
+    });
+
+    const updatedEvents: Event[] = [
+      {
+        ...mockUpdatedEvent,
+        id: '1',
+      },
+      {
+        ...mockUpdatedEvent,
+        id: '2',
+        date: '2024-07-26',
+      },
+    ];
+
+    await act(() => Promise.resolve(null));
+    expect(result.current.events).toEqual(updatedEvents);
+  });
+
   it('반복 설정이 적용된 이벤트를 삭제할 때, 해당 반복 일정만 삭제된다.', async () => {
     const events: Event[] = [
       {
