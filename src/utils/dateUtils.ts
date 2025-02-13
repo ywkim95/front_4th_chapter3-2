@@ -141,6 +141,8 @@ export function getRepeatText(repeat: Omit<RepeatType, 'none'>) {
       return '매월';
     case 'yearly':
       return '매년';
+    default:
+      return '반복 유형을 선택해 주세요.';
   }
 }
 

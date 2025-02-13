@@ -12,4 +12,4 @@ export const notificationOptions = [
   { value: 1440, label: '1일 전' },
 ];
 
-export const repeatTypes: RepeatType[] = ['daily', 'weekly', 'monthly', 'yearly'];
+export const repeatTypes: RepeatType[] = ['none', 'daily', 'weekly', 'monthly', 'yearly'];

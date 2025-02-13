@@ -15,4 +15,5 @@ export const TOAST_MESSAGES = {
   LOAD_ERROR: '이벤트 로딩 실패',
   REQUIRED: '필수 정보를 모두 입력해주세요.',
   TIME: '시간 설정을 확인해주세요.',
+  REPEAT: '반복 설정을 확인해주세요.',
 } as const;
