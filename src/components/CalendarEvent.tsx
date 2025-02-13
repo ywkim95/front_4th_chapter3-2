@@ -1,4 +1,4 @@
-import { BellIcon } from '@chakra-ui/icons';
+import { BellIcon, RepeatIcon } from '@chakra-ui/icons';
 import { Box, HStack, Text } from '@chakra-ui/react';
 
 import { Event } from '../types.ts';
@@ -19,6 +19,7 @@ const CalendarEvent = ({ event, isNotified }: CalendarEventProps) => (
     color={isNotified ? 'red.500' : 'inherit'}
   >
     <HStack spacing={1}>
+      {event.repeat.type !== 'none' && <RepeatIcon data-testid="repeat-info" />}
       {isNotified && <BellIcon data-testid="BellIcon" />}
       <Text fontSize="sm" noOfLines={1}>
         {event.title}
