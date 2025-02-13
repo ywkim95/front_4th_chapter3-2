@@ -29,6 +29,6 @@ export function fetchHolidays(date: Date) {
         ...acc,
         [date]: HOLIDAY_RECORD[date],
       }),
-      {},
+      {}
     );
 }

@@ -24,7 +24,7 @@ const CalendarView = ({
   setView,
   navigate,
 }: CalendarViewProps) => (
-  <VStack flex={1} spacing={5} align='stretch'>
+  <VStack flex={1} spacing={5} align="stretch">
     <Heading>일정 보기</Heading>
     <CalendarHeader view={view} onViewChange={setView} onNavigate={navigate} />
 

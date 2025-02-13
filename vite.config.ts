@@ -27,5 +27,5 @@ export default mergeConfig(
         reporter: ['lcov', 'json', 'json-summary'],
       },
     },
-  }),
+  })
 );

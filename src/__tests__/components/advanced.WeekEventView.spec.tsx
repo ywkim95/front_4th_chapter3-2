@@ -37,7 +37,7 @@ describe('<WeekEventView />', () => {
     render(
       <ChakraProvider>
         <WeekEventView currentDate={currentDate} filteredEvents={[]} notifiedEvents={[]} />
-      </ChakraProvider>,
+      </ChakraProvider>
     );
 
     const expectedWeek = formatWeek(currentDate);
@@ -54,7 +54,7 @@ describe('<WeekEventView />', () => {
     render(
       <ChakraProvider>
         <WeekEventView currentDate={currentDate} filteredEvents={mockEvents} notifiedEvents={[]} />
-      </ChakraProvider>,
+      </ChakraProvider>
     );
 
     expect(screen.getByText('테스트 이벤트 1')).toBeInTheDocument();
@@ -70,7 +70,7 @@ describe('<WeekEventView />', () => {
           filteredEvents={mockEvents}
           notifiedEvents={['1']}
         />
-      </ChakraProvider>,
+      </ChakraProvider>
     );
     expect(screen.getByTestId('BellIcon')).toBeVisible();
   });

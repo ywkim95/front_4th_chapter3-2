@@ -21,7 +21,7 @@ describe('CalendarEvent', () => {
     render(
       <ChakraProvider>
         <CalendarEvent event={mockEvent} isNotified={isNotified} />
-      </ChakraProvider>,
+      </ChakraProvider>
     );
 
   it('알림이 없을 때, BellIcon을 표시하지 않는다.', () => {

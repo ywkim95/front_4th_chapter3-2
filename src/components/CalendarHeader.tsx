@@ -8,20 +8,21 @@ interface CalendarHeaderProps {
 }
 
 const CalendarHeader = ({ view, onViewChange, onNavigate }: CalendarHeaderProps) => (
-  <HStack mx='auto' justifyContent='space-between'>
+  <HStack mx="auto" justifyContent="space-between">
     <IconButton
-      aria-label='Previous'
+      aria-label="Previous"
       icon={<ChevronLeftIcon />}
       onClick={() => onNavigate('prev')}
     />
     <Select
-      aria-label='view'
+      aria-label="view"
       value={view}
-      onChange={(e) => onViewChange(e.target.value as 'week' | 'month')}>
-      <option value='week'>Week</option>
-      <option value='month'>Month</option>
+      onChange={(e) => onViewChange(e.target.value as 'week' | 'month')}
+    >
+      <option value="week">Week</option>
+      <option value="month">Month</option>
     </Select>
-    <IconButton aria-label='Next' icon={<ChevronRightIcon />} onClick={() => onNavigate('next')} />
+    <IconButton aria-label="Next" icon={<ChevronRightIcon />} onClick={() => onNavigate('next')} />
   </HStack>
 );
 

@@ -47,7 +47,7 @@ describe('<MonthEventView />', () => {
           notifiedEvents={[]}
           holidays={{}}
         />
-      </ChakraProvider>,
+      </ChakraProvider>
     );
 
     const expectedMonth = formatMonth(currentDate);
@@ -69,7 +69,7 @@ describe('<MonthEventView />', () => {
           notifiedEvents={[]}
           holidays={{}}
         />
-      </ChakraProvider>,
+      </ChakraProvider>
     );
 
     expect(screen.getByText('테스트 이벤트 1')).toBeInTheDocument();
@@ -86,7 +86,7 @@ describe('<MonthEventView />', () => {
           notifiedEvents={['1']}
           holidays={{}}
         />
-      </ChakraProvider>,
+      </ChakraProvider>
     );
     expect(screen.getByTestId('BellIcon')).toBeVisible();
   });
@@ -101,7 +101,7 @@ describe('<MonthEventView />', () => {
           notifiedEvents={[]}
           holidays={mockHolidays}
         />
-      </ChakraProvider>,
+      </ChakraProvider>
     );
     expect(screen.getByText('휴일 1')).toBeInTheDocument();
   });

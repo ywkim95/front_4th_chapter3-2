@@ -12,7 +12,7 @@ describe('<Notification />', () => {
     render(
       <ChakraProvider>
         <Notification message={message} index={index} onClose={mockOnClose} />
-      </ChakraProvider>,
+      </ChakraProvider>
     );
 
   it('알림 메시지가 "테스트 알림 메시지"로 표시되는가', () => {

@@ -39,7 +39,7 @@ describe('EventListView', () => {
   const renderComponent = (
     events: Event[] = mockEvents,
     searchTerm: string = '',
-    notifiedEvents: string[] = [],
+    notifiedEvents: string[] = []
   ) =>
     render(
       <ChakraProvider>
@@ -51,7 +51,7 @@ describe('EventListView', () => {
           onEdit={mockOnEdit}
           onDelete={mockOnDelete}
         />
-      </ChakraProvider>,
+      </ChakraProvider>
     );
 
   it('검색어 입력 시, onSearchChange 콜백을 호출한다.', () => {
@@ -75,7 +75,7 @@ describe('EventListView', () => {
   it('notifiedEvents에 포함된 이벤트는 EventCard에 isNotified=true를 전달한다.', () => {
     renderComponent(mockEvents, '', ['1']);
     expect(
-      screen.getByText(mockEvents[0].title).parentElement?.parentElement?.firstChild,
+      screen.getByText(mockEvents[0].title).parentElement?.parentElement?.firstChild
     ).toBeInTheDocument();
   });
 });

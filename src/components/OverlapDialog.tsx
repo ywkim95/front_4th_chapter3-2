@@ -30,7 +30,7 @@ const OverlapDialog = ({
     <AlertDialog isOpen={isOverlapDialogOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
       <AlertDialogOverlay>
         <AlertDialogContent>
-          <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+          <AlertDialogHeader fontSize="lg" fontWeight="bold">
             일정 겹침 경고
           </AlertDialogHeader>
 
@@ -48,7 +48,7 @@ const OverlapDialog = ({
             <Button ref={cancelRef} onClick={onClose}>
               취소
             </Button>
-            <Button colorScheme='red' onClick={onProceed} ml={3}>
+            <Button colorScheme="red" onClick={onProceed} ml={3}>
               계속 진행
             </Button>
           </AlertDialogFooter>

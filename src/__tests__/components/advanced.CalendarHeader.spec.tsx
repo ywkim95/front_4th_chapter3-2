@@ -12,7 +12,7 @@ describe('CalendarHeader', () => {
     render(
       <ChakraProvider>
         <CalendarHeader view={view} onViewChange={mockOnViewChange} onNavigate={mockOnNavigate} />
-      </ChakraProvider>,
+      </ChakraProvider>
     );
 
   it('현재 뷰에 따라 올바른 옵션을 표시한다.', () => {

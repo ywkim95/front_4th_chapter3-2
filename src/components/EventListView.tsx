@@ -21,10 +21,10 @@ const EventListView = ({
   onEdit,
   onDelete,
 }: EventListViewProps) => (
-  <VStack data-testid='event-list' w='500px' h='full' overflowY='auto'>
-    <FormField label='일정 검색'>
+  <VStack data-testid="event-list" w="500px" h="full" overflowY="auto">
+    <FormField label="일정 검색">
       <Input
-        placeholder='검색어를 입력하세요'
+        placeholder="검색어를 입력하세요"
         value={searchTerm}
         onChange={(e) => onSearchChange(e.target.value)}
       />

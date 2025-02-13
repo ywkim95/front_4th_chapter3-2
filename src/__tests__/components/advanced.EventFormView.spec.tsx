@@ -55,7 +55,7 @@ describe('<EventFormView />', () => {
     return render(
       <ChakraProvider>
         <EventFormView formState={formState} onSubmit={mockOnSubmit} />
-      </ChakraProvider>,
+      </ChakraProvider>
     );
   };
 

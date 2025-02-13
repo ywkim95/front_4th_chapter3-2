@@ -49,7 +49,7 @@ describe('<OverlapDialog />', () => {
           onClose={mockOnClose}
           onProceed={mockOnProceed}
         />
-      </ChakraProvider>,
+      </ChakraProvider>
     );
 
   it('isOverlapDialogOpen이 true일 때 다이얼로그가 열리는가', () => {
@@ -66,7 +66,7 @@ describe('<OverlapDialog />', () => {
     renderComponent(true);
     overlappingEvents.forEach((event) => {
       expect(
-        screen.getByText(`${event.title} (${event.date} ${event.startTime}-${event.endTime})`),
+        screen.getByText(`${event.title} (${event.date} ${event.startTime}-${event.endTime})`)
       ).toBeInTheDocument();
     });
   });

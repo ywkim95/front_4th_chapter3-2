@@ -14,7 +14,7 @@ describe('<NotificationList />', () => {
     render(
       <ChakraProvider>
         <NotificationList notifications={notifications} onClose={mockOnClose} />
-      </ChakraProvider>,
+      </ChakraProvider>
     );
 
   it('입력된 알림 객체가 모두 표시되는가', () => {

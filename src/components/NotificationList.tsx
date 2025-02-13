@@ -8,7 +8,7 @@ interface NotificationListProps {
 }
 
 const NotificationList = ({ notifications, onClose }: NotificationListProps) => (
-  <VStack position='fixed' top={4} right={4} spacing={2} align='flex-end'>
+  <VStack position="fixed" top={4} right={4} spacing={2} align="flex-end">
     {notifications.map((notification, index) => (
       <Notification
         key={notification.id}
