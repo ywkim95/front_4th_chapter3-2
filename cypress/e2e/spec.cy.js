@@ -1,10 +1,16 @@
 describe('필수 기능 테스트', () => {
+  let events;
+  before(() => {
+    cy.request('/api/events').then((response) => {
+      events = response.body.events;
+    });
+  });
   beforeEach(() => {
     cy.visit('http://localhost:5173');
   });
 
   after(() => {
-    cy.request('POST', '/api/reset-events');
+    cy.request('POST', '/api/reset-events', { events });
   });
 
   const getInputByLabel = (labelText) =>

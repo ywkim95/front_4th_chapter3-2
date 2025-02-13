@@ -140,12 +140,15 @@ app.delete('/api/events-list', async (req, res) => {
   res.status(204).send();
 });
 
-app.post('/api/reset-events', async (_, res) => {
-  fs.copyFileSync(
-    `${__dirname}/src/__mocks__/response/origin_realEvents.json`,
-    `${__dirname}/src/__mocks__/response/realEvents.json`
-  );
+app.post('/api/reset-events', async (req, res) => {
+  const events = req.body.events;
 
+  fs.writeFileSync(
+    `${__dirname}/src/__mocks__/response/realEvents.json`,
+    JSON.stringify({
+      events,
+    })
+  );
   res.status(204).send();
 });
 
