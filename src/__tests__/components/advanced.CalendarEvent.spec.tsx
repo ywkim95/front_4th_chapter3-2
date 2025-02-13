@@ -17,10 +17,10 @@ describe('CalendarEvent', () => {
     repeat: { type: 'none', interval: 0 },
     notificationTime: 10,
   };
-  const renderComponent = (isNotified: boolean) =>
+  const renderComponent = (isNotified: boolean, event: Event = mockEvent) =>
     render(
       <ChakraProvider>
-        <CalendarEvent event={mockEvent} isNotified={isNotified} />
+        <CalendarEvent event={event} isNotified={isNotified} />
       </ChakraProvider>
     );
 
@@ -33,5 +33,15 @@ describe('CalendarEvent', () => {
     renderComponent(true);
     expect(screen.getByText('기존 회의')).toBeInTheDocument();
     expect(screen.getByTestId('BellIcon')).toBeInTheDocument();
+  });
+
+  it('반복 일정이 있을 때, 반복 정보를 표시한다.', () => {
+    const repeatEvent: Event = {
+      ...mockEvent,
+      repeat: { type: 'daily', interval: 1 },
+    };
+    renderComponent(false, repeatEvent);
+    expect(screen.getByText('기존 회의')).toBeInTheDocument();
+    expect(screen.getByTestId('repeat-info')).toBeInTheDocument();
   });
 });
